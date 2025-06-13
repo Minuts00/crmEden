@@ -65,14 +65,8 @@ class ProductsController extends Controller
             //     'id_utente'->Auth::id(),
             // ]);
 
-        } catch (ValidationException $e)
-        {
-            // last work point
-            return
-                to_route('newproduct')
-                    ->withErrors($e->errors());
         }
-    }
+    
     public function destroy(Product $product)
     {
         $product->delete();
