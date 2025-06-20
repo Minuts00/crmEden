@@ -4,7 +4,7 @@
 use App\Http\Controllers\Home_Controller;
 use App\Http\Controllers\User_Controller;
 use App\Http\Controllers\Admin_Controller;
-use App\Http\Controllers\Auth_Controller;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\OrdersController;
 use Illuminate\Support\Facades\Auth;
@@ -15,30 +15,25 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login.attempt');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('user')
-    ->middleware('auth')
-    ->group(function () {
-      Route::get('dashboard', [User_Controller::class, 'dashboard'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
     });
+});
+Route::middleware(['auth'])->group(function (){
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+});
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 
-Route::prefix('product')
-    ->group(function () {
-        Route::get('search', [ProductsController::class, 'searchProduct'])->name('search-product');
-        Route::get('see/{ID}', [ProductsController::class, 'see'])->name('see-product');
-        Route::get('all', [ProductsController::class, 'all'])->name('all');
-        Route::get('newproduct', [ProductsController::class, 'newProduct'])->name('new-product')->middleware('auth');
-        Route::post('postProduct', [ProductsController::class, 'postProduct'])->name('post-product')->middleware('auth');
-    });
-
-Route::prefix('order')
-    ->group(function () {
-        Route::get('search', [OrdersController::class, 'searchOrder'])->name('search-order');
-        Route::get('all', [OrdersController::class, 'all'])->name('all');
-        Route::get('order', [OrdersController::class, 'vendiProdotto'])->name('vendi-prodotto')->middleware('auth');
-        Route::post('postorder', [OrdersController::class, 'caricaProdotto'])->name('carica-prodotto')->middleware('auth');
-
-    });
-
-
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+});
 

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class Auth_Controller extends Controller
+class AuthController extends Controller
 {
     public function showLogin()
 {
@@ -16,16 +16,16 @@ class Auth_Controller extends Controller
 
 public function login(Request $request)
 {
-    $request->validate([
-        'nickname' => 'required',
-        'password' => 'required',
+    $credentials = $request->validate([
+        'nickname' => 'required|string',
+        'password' => 'required|string',
     ]);
 
-    $user = User::where('nickname', $request->nickname)->first();
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
 
-    if ($user && Hash::check($request->password, $user->password)) {
-        Auth::login($user);
-        return redirect()->intended('/dashboard');
+        // Redireziona dove vuoi dopo il login
+        return redirect()->intended(route('orders.create'));
     }
 
     return back()->withErrors([

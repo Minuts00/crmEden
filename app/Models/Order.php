@@ -21,10 +21,10 @@ class Order extends Model
         'price',
     ];
 
-    protected $casts = [
-        'id_user' => 'integer',
-        'price' => 'double',
-    ];
+    // protected $casts = [
+    //     'id_user' => 'integer',
+    //     'price' => 'double',
+    // ];
 
 
     public function user(): Model

@@ -15,7 +15,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#">Ordina</a>
+                <a class="nav-link" href="{{ route('orders.create') }}">Ordina</a>
                 </li>
             </ul>
             <form class="d-flex" role="search">
