@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -10,14 +11,14 @@ class Product extends Model
     // aggiornamento: rivedere e settare tocchi finali
     // integrare stock di tipo BOOLEANO IN DB(SCRIVERE SU MIGRAZIONE)
       use HasFactory;
-    use SoftDeletes;
+   
 
     protected $table = 'products';
     protected $primaryKey = 'ID';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_category',
+        'category',
         'name',
         'description',
         'price_list',

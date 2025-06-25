@@ -15,38 +15,39 @@ class OrderController extends Controller
 
     }
     // da riscrivere TUTTO secondo orders
+   
     public function create()
 {
-    $users = User::all(); // così puoi selezionare l'utente dal form
-    return view('orders.create', compact('users'));
+    return view('orders.create');
 }
 
 public function store(Request $request)
 {
-   $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string',
+    // dd($request->all());
+    if (!Auth::check()) {
+        return redirect()->route('login')->withErrors('Devi essere autenticato per inviare un ordine.');
+    }
+
+    $validated = $request->validate([
+        'name' => 'required|string',
+        'description' => 'nullable|string',
         'price' => 'required|numeric',
-        'payment_proof' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'payment_proof' => 'nullable|image|max:2048',
     ]);
 
     $order = new Order();
-    $order->id_user = Auth::id();
-    $order->name = $validated['name'];
-    $order->description = $validated['description'];
-    $order->price = $validated['price'];
+$order->id_user = Auth::id();
+$order->name = $request->input('name');
+$order->description = $request->input('description');
+$order->price = $request->input('price');
 
-    // Caricamento immagine se presente
     if ($request->hasFile('payment_proof')) {
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
         $order->payment_proof = $path;
     }
-
+// dd($order);
     $order->save();
 
-    return redirect()->route('orders.index')->with('success', 'Ordine inviato con successo.');
-if (!Auth::check()) {
-    return redirect()->route('login')->withErrors('Devi essere autenticato per inviare un ordine.');
-}
+    return redirect()->route('orders.create')->with('success', 'Ordine inviato con successo.');
 }
 }

@@ -13,10 +13,13 @@ class User extends Authenticatable
 
 // da rivedere e settare eventualmente
 
-    protected $primaryKey = 'ID';
-
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'integer';
     protected $table = 'users';
     public $timestamps = false;
+    
+    
 
     /**
      * The attributes that are mass assignable.
@@ -29,14 +32,16 @@ class User extends Authenticatable
         'is_admin',
     ];
 
+    protected $hidden = [
+        'password',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-    ];
+    
 
     /**
      * The attributes that should be cast.
@@ -47,4 +52,7 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_admin' => 'boolean',
     ];
+    
+
+
 }

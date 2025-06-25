@@ -21,11 +21,9 @@ public function login(Request $request)
         'password' => 'required|string',
     ]);
 
-    if (Auth::attempt($credentials)) {
+    if (Auth::attempt(['nickname' => $credentials['nickname'], 'password' => $credentials['password']])) {
         $request->session()->regenerate();
-
-        // Redireziona dove vuoi dopo il login
-        return redirect()->intended(route('orders.create'));
+        return redirect()->intended('/dashboard');
     }
 
     return back()->withErrors([
@@ -36,7 +34,7 @@ public function login(Request $request)
 public function logout()
 {
     Auth::logout();
-    return redirect('/auth');
+    return redirect('/login');
 }
 }
 

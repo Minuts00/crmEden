@@ -19,10 +19,13 @@
     <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
         @csrf
 
-        <div>
-            <label for="category" class="block font-medium">Categoria</label>
-            <input type="text" name="category" id="category" class="border p-2 w-full" value="{{ old('category') }}">
-            @error('category') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+        <div class="col-md-6">
+            <select id="category" class ="form-control" name="category" required>
+                <option selected>Categoria</option>
+                @foreach($categories as $category)
+                    <option value="{{$category->ID}}">{{$category->name}}</option>
+                @endforeach
+            </select>
         </div>
 
         <div>
@@ -50,8 +53,8 @@
         </div>
 
         <div>
-            <label for="img" class="block font-medium">Immagine (opzionale)</label>
-            <input type="file" name="img" id="img" class="border p-2 w-full">
+            <label for="img" class="block font-medium">Immagine</label>
+            <input type="file" name="img" id="img" accept="image/*" required class="border p-2 w-full">
             @error('img') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
         </div>
 

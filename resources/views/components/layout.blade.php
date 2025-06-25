@@ -17,6 +17,12 @@
                 <li class="nav-item">
                 <a class="nav-link" href="{{ route('orders.create') }}">Ordina</a>
                 </li>
+                <li class="nav-item">
+                <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                    <button type="submit">Logout</button>
+                </form>
+                </li>
             </ul>
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
