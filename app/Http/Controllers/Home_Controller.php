@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller;
+use App\Models\Product; 
 use Illuminate\Http\Request;
 
 class Home_Controller extends Controller
@@ -13,6 +15,7 @@ class Home_Controller extends Controller
 
      public function index()
     {
-        return view('home');
-    }
+    $products = Product::all();
+    return view('home', compact('products'));
+}
 }
