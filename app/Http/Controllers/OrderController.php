@@ -16,9 +16,10 @@ class OrderController extends Controller
     }
     // da riscrivere TUTTO secondo orders
    
-    public function create()
+ public function create()
 {
-    return view('orders.create');
+    $products = \App\Models\Product::all();
+    return view('orders.create', compact('products'));
 }
 
 public function store(Request $request)
@@ -29,15 +30,16 @@ public function store(Request $request)
     }
 
     $validated = $request->validate([
-        'name' => 'required|string',
+        'product_id' => 'required|exists:products,ID',
         'description' => 'nullable|string',
         'price' => 'required|numeric',
         'payment_proof' => 'nullable|image|max:2048',
     ]);
+    //dd($validated);
 
     $order = new Order();
 $order->id_user = Auth::id();
-$order->name = $request->input('name');
+$order->product_id = $request->input('product_id');
 $order->description = $request->input('description');
 $order->price = $request->input('price');
 
@@ -45,9 +47,12 @@ $order->price = $request->input('price');
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
         $order->payment_proof = $path;
     }
-// dd($order);
-    $order->save();
+    //dd($order);
+   $order->save();
+   //if (!$order->exists) {
+ //  dd('Ordine NON salvato', $order);
+   //}
 
-    return redirect()->route('orders.create')->with('success', 'Ordine inviato con successo.');
+   //return redirect()->route('orders.create')->with('success', 'Ordine inviato con successo.');
 }
 }

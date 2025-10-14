@@ -1,7 +1,6 @@
 <?php
 
 
-use App\Http\Controllers\Home_Controller;
 use App\Http\Controllers\User_Controller;
 use App\Http\Controllers\Admin_Controller;
 use App\Http\Controllers\AuthController;
@@ -10,11 +9,10 @@ use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');

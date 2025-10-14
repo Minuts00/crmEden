@@ -14,10 +14,9 @@ class Order extends Model
     protected $table = 'orders';
     protected $primaryKey = 'id';
     public $timestamps = false;
-
     protected $fillable = [
-        // 'id_user',
-        'name',
+        'id_user',
+        'product_id',
         'description',
         'price',
         'payment_proof',

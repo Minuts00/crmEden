@@ -10,7 +10,12 @@
     <form method="POST" action="{{ route('orders.store') }}" enctype="multipart/form-data">
     @csrf
 
-    <input type="text" name="name" placeholder="Nome prodotto" required>
+    <select name="product_id" required>
+        <option value="">Seleziona prodotto</option>
+        @foreach($products as $product)
+            <option value="{{ $product->id }}">{{ $product->name }}</option>
+        @endforeach
+    </select>
     <textarea name="description" placeholder="Descrizione" required></textarea>
     <input type="number" name="price" step="0.01" placeholder="Prezzo" required>
 
