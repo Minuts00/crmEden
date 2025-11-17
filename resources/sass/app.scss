@@ -1,4 +1,9 @@
 @import 'bootstrap/scss/bootstrap';
+
+body {
+  background-color: #7AD8F0;
+}
+
 @property --a {
     syntax: "<angle>";
     initial-value: 45deg;
@@ -61,5 +66,8 @@
     50% {transform: var(--_t)rotate3d(-1,-1,0,var(--r))}
     62% {transform: var(--_t)rotate3d( 0,-1,0,var(--r))}
     75% {transform: var(--_t)rotate3d( 1,-1,0,var(--r))}
-    87% {transform: var(--_t)rotate3d( 1, 0,0,var(--r))}
+    87% {transform: var(--_t)rotate3d( 1, 0,0,var(--r))};
+}
+.text {
+    color: #2E2E2E;
 }

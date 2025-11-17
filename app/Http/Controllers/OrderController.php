@@ -55,4 +55,9 @@ $order->price = $request->input('price');
 
    //return redirect()->route('orders.create')->with('success', 'Ordine inviato con successo.');
 }
+public function show($id)
+{
+    $order = Order::findOrFail($id);
+    return view('orders.show', compact('order'));
+}
 }

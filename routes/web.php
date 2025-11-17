@@ -19,14 +19,25 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', fn () => view('dashboard'));
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 });
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [Admin_Controller::class, 'dashboard']);
+Route::middleware(['auth', 'admin'])->group(function () {;
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+ //   Route::resource('products', ProductController::class);
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+});  
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('dashboard.admin');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 });
 

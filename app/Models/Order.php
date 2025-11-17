@@ -13,7 +13,7 @@ class Order extends Model
 
     protected $table = 'orders';
     protected $primaryKey = 'id';
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable = [
         'id_user',
         'product_id',

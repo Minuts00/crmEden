@@ -58,6 +58,11 @@
             @error('img') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
         </div>
 
+        <div>
+            <label for="stock" class="block font-medium">Stock</label>
+            <input type="checkbox" name="stock" id="stock" value="1" {{ old('stock', $product->stock ?? true) ? 'checked' : '' }}>
+        </div>
+
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Carica prodotto</button>
     </form>
 </x-layout>

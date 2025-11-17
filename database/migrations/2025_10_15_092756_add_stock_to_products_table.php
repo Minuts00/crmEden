@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('product_id')->after('id_user');
+        Schema::table('products', function (Blueprint $table) {
+            $table->boolean('stock')->default(true)->after('img');
         });
-    }
+        }
+    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             //
         });
     }
