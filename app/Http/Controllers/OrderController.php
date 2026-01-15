@@ -53,7 +53,7 @@ $order->price = $request->input('price');
  //  dd('Ordine NON salvato', $order);
    //}
 
-   //return redirect()->route('orders.create')->with('success', 'Ordine inviato con successo.');
+   return redirect()->route('orders.create')->with('success', 'Ordine inviato con successo.');
 }
 public function show($id)
 {

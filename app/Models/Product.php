@@ -35,6 +35,42 @@ class Product extends Model
         'stock' => 'boolean',
     ];
 
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->ordered();
+    }
+
+    public function primaryImage(): HasOne
+    {
+        return $this -> hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    public function galleryImages(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)
+                    ->where('type', 'gallery')
+                    -where('is_active', true)
+                    ->ordered();
+    }
+
+    public function getAllImagesAttribute()
+    {
+        return $this->images()->active()->ordered()->get();
+    }
+
+    public function getMainImageUrlAttribute()
+    {
+        if ($this->primaryImages) {
+            return $this->primaryImage->image_url;
+        }
+        if(!empty($this->img)) {
+            if(filter_var($this->img, FILTER_VALIDATE_URL)) {
+                return $this->img;
+            }
+            return asset ('storage/' . $this->img);
+        }
+    }
+
     public function category(): Model
     {
         return $this->belongsTo(Category::class, 'id_category', 'ID')->first();
