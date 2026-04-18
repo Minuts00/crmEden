@@ -6,14 +6,23 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 
 class ProductController extends Controller
 {
     public function index()
     {
         $this->authorize('viewAny', Product::class);
-        $products = Product::all();
-        return view('home', compact('products'));
+        $products = Product::with([
+            'category:ID,name',
+            'images' => function ($query) {
+                $query->where('is_active', true)->ordered();
+            },
+        ])->get();
+
+        $frontendProducts = $this->formatProducts($products);
+
+        return view('home', compact('products', 'frontendProducts'));
     }
 
     public function create()
@@ -104,4 +113,48 @@ class ProductController extends Controller
 
     return view('products.show', compact('product'));
 }
+    private function formatProducts(Collection $products): array
+    {
+        return $products->map(function (Product $product) {
+            $activeImages = $product->images;
+            $primaryImage = $activeImages->firstWhere('is_primary', true) ?? $activeImages->first();
+
+            $mainImage = $this->toPublicUrl($primaryImage?->img_path ?? $product->img);
+
+            $gallery = $activeImages
+                ->pluck('img_path')
+                ->map(fn (?string $path) => $this->toPublicUrl($path))
+                ->filter()
+                ->values();
+
+            if ($mainImage && !$gallery->contains($mainImage)) {
+                $gallery->prepend($mainImage);
+            }
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'category_name' => $product->category?->name ?? 'Senza categoria',
+                'price_list' => $product->price_list,
+                'price_min' => $product->price_min,
+                'stock' => (bool) $product->stock,
+                'main_image' => $mainImage,
+                'images' => $gallery->all(),
+            ];
+        })->all();
+    }
+
+    private function toPublicUrl(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    }
 }
