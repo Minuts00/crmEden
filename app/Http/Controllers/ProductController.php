@@ -63,11 +63,12 @@ class ProductController extends Controller
 
         $product->save();
 
-          if ($request->hasFile('imgs')) {
+        if ($request->hasFile('imgs')) {
+            $hasDedicatedMain = !empty($product->img);
             foreach ($request->file('imgs') as $index => $imageFile) {
                 $path = $imageFile->store('products', 'public');
 
-                if ($index === 0 && empty($product->img)) {
+                if (!$hasDedicatedMain && $index === 0) {
                     $product->img = $path;
                     $product->save();
                 }
@@ -77,7 +78,7 @@ class ProductController extends Controller
                     'img_path' => $path,
                     'type' => 'gallery',
                     'order' => $index,
-                    'is_primary' => $index === 0,
+                      'is_primary' => !$hasDedicatedMain && $index === 0,
                     'is_active' => true,
                 ]);
             }
@@ -142,8 +143,9 @@ class ProductController extends Controller
             $activeImages = $product->images;
             $primaryImage = $activeImages->firstWhere('is_primary', true) ?? $activeImages->first();
 
-            $mainImage = $this->toPublicUrl($primaryImage?->img_path ?? $product->img);
-
+             $mainImage = $this->toPublicUrl($product->img)
+                ?? $this->toPublicUrl($primaryImage?->img_path);
+                
             $gallery = $activeImages
                 ->pluck('img_path')
                 ->map(fn (?string $path) => $this->toPublicUrl($path))
@@ -178,6 +180,18 @@ class ProductController extends Controller
             return $path;
         }
 
-        return asset('storage/' . ltrim($path, '/'));
+          $normalized = ltrim($path, '/');
+
+        foreach (['storage/app/public/', 'public/', 'storage/'] as $prefix) {
+            if (str_starts_with($normalized, $prefix)) {
+                $normalized = substr($normalized, strlen($prefix));
+            }
+        }
+
+        if (Storage::disk('public')->exists($normalized)) {
+            return route('media.public', ['path' => $normalized]);
+        }
+
+        return asset('storage/' . $normalized);
     }
 }

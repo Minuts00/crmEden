@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -35,7 +36,8 @@ $products = Product::with([
             $activeImages = $product->images;
             $primaryImage = $activeImages->firstWhere('is_primary', true) ?? $activeImages->first();
 
-            $mainImage = $this->toPublicUrl($primaryImage?->img_path ?? $product->img);
+              $mainImage = $this->toPublicUrl($product->img)
+                ?? $this->toPublicUrl($primaryImage?->img_path);
 
             $gallery = $activeImages
                 ->pluck('img_path')
@@ -71,5 +73,19 @@ $products = Product::with([
             return $path;
         }
 
-        return asset('storage/' . ltrim($path, '/'));    }
+         $normalized = ltrim($path, '/');
+
+        foreach (['storage/app/public/', 'public/', 'storage/'] as $prefix) {
+            if (str_starts_with($normalized, $prefix)) {
+                $normalized = substr($normalized, strlen($prefix));
+            }
+        }
+
+        if (Storage::disk('public')->exists($normalized)) {
+            return route('media.public', ['path' => $normalized]);
+        }
+
+        return asset('storage/' . $normalized);
+    }
+
 }

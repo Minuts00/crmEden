@@ -8,9 +8,14 @@ use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MediaController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::middleware('auth')->get('/media/{path}', [MediaController::class, 'show'])
+    ->where('path', '.*')
+    ->name('media.public');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');

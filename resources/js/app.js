@@ -1,5 +1,5 @@
 import './bootstrap';
-import 'bootstrap';
+import * as bootstrap from 'bootstrap';
 const FALLBACK_IMAGE = 'https://placehold.co/600x400?text=No+Image';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const product = JSON.parse(payload);
+            const product = JSON.parse(decodeURIComponent(payload));
             openProductModal(product);
         });
     }
@@ -53,12 +53,14 @@ function buildProductCard(product, userRole) {
     const stockLabel = safeProduct.stock ? 'Disponibile' : 'Non disponibile';
     const priceList = formatPrice(safeProduct.price_list);
     const priceMin = formatPrice(safeProduct.price_min);
+    const serializedProduct = encodeURIComponent(JSON.stringify(safeProduct));
 
     const actionButton = userRole === 'admin'
         ? `<a href="/products/${safeProduct.id}/edit" class="btn btn-warning w-100">Modifica prodotto</a>`
         : `<button class="btn btn-info w-100"
                     data-product-modal-trigger
-                    data-product-payload='${escapeHtml(JSON.stringify(safeProduct))}'>Visualizza dettagli</button>`;
+                   data-product-payload="${serializedProduct}">Visualizza dettagli</button>`;
+
 
     return `
         <article class="col-12 col-sm-6 col-lg-4 col-xl-3">
