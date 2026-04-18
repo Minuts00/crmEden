@@ -18,7 +18,7 @@ class HomeController extends Controller
     public function index()
     {
 $products = Product::with([
-            'category:ID,name',
+            'category:id,name',
             'images' => function ($query) {
                 $query->where('is_active', true)->ordered();
             },

@@ -21,11 +21,12 @@
 
         <div class="col-md-6">
             <select id="category_id" class ="form-control" name="category_id" required>
-                <option selected>Categoria</option>
+                 <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Seleziona una categoria</option>
                 @foreach($categories as $category)
-                     <option value="{{$category->ID}}" {{ (string) old('category_id') === (string) $category->ID ? 'selected' : '' }}>{{$category->name}}</option>
+                     <option value="{{$category->id}}" {{ (string) old('category_id') === (string) $category->id ? 'selected' : '' }}>{{$category->name}}</option>
                 @endforeach
             </select>
+              @error('category_id') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
         </div>
 
         <div>

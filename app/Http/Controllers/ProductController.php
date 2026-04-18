@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         $this->authorize('viewAny', Product::class);
         $products = Product::with([
-            'category:ID,name',
+            'category:id,name',
             'images' => function ($query) {
                 $query->where('is_active', true)->ordered();
             },
@@ -37,7 +37,7 @@ class ProductController extends Controller
     {
          $this->authorize('create', Product::class);
         $validated = $request->validate([
-            'category_id'     => 'required|integer|exists:categories,ID',
+            'category_id'     => 'required|integer|exists:categories,id',
             'name'         => 'required|string|max:255',
             'description'  => 'nullable|string',
             'price_list'   => 'required|numeric|min:0',
@@ -104,7 +104,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price_list' => 'nullable|numeric',
             'price_min' => 'nullable|numeric',
-            'category_id' => 'nullable|exists:categories,ID',
+            'category_id' => 'nullable|exists:categories,id',
             'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'stock' => 'nullable|boolean',
         ]);

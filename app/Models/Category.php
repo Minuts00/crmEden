@@ -12,7 +12,7 @@ class Category extends Model
 
     protected $table = 'categories';
 
-    protected $primaryKey = 'ID';
+    protected $primaryKey = 'id';
 
     public $timestamps = false;
 
@@ -23,7 +23,6 @@ class Category extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class, 'id_product', 'ID');
+        return $this->hasMany(Product::class, 'id_product', 'id');
     }
 }
-// da finire in db prima, aggiungere id_product in migrazione
