@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            //
-        });
+          if (!Schema::hasColumn('orders', 'created_at') && !Schema::hasColumn('orders', 'updated_at')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            //
-        });
+      if (Schema::hasColumn('orders', 'created_at') && Schema::hasColumn('orders', 'updated_at')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->dropTimestamps();
+            });
+        }
     }
 };

@@ -20,10 +20,10 @@
         @csrf
 
         <div class="col-md-6">
-            <select id="category" class ="form-control" name="category" required>
+            <select id="category_id" class ="form-control" name="category_id" required>
                 <option selected>Categoria</option>
                 @foreach($categories as $category)
-                    <option value="{{$category->ID}}">{{$category->name}}</option>
+                     <option value="{{$category->ID}}" {{ (string) old('category_id') === (string) $category->ID ? 'selected' : '' }}>{{$category->name}}</option>
                 @endforeach
             </select>
         </div>

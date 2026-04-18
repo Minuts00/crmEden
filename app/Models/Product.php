@@ -4,21 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
-    // da riscrivere tutto secondo PRODUCT
-    // aggiornamento: rivedere e settare tocchi finali
-    // integrare stock di tipo BOOLEANO IN DB(SCRIVERE SU MIGRAZIONE)
       use HasFactory;
-   
-
+    
     protected $table = 'products';
     protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $fillable = [
-        'category',
+        'category_id',
         'name',
         'description',
         'price_list',
@@ -28,8 +27,7 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'id_user' => 'integer',
-        'id_category' => 'integer',
+        'category_id' => 'integer',
         'price_list' => 'double',
         'price_min' => 'double',
         'stock' => 'boolean',
@@ -49,7 +47,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class)
                     ->where('type', 'gallery')
-                    -where('is_active', true)
+                    ->where('is_active', true)
                     ->ordered();
     }
 
@@ -61,24 +59,24 @@ class Product extends Model
     public function getMainImageUrlAttribute()
     {
         if ($this->primaryImages) {
-            return $this->primaryImage->image_url;
+            return $this->primaryImage->img_path;
         }
-        if(!empty($this->img)) {
-            if(filter_var($this->img, FILTER_VALIDATE_URL)) {
+        if (!empty($this->img)) {
+            if (filter_var($this->img, FILTER_VALIDATE_URL)) {
                 return $this->img;
             }
-            return asset ('storage/' . $this->img);
+            return asset('storage/' . $this->img);
         }
+        return null;
     }
 
-    public function category(): Model
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'id_category', 'ID')->first();
+        return $this->belongsTo(Category::class, 'category_id', 'ID');
     }
 
-     public function user(): Model
+     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_user', 'ID')->first();
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
-
 }

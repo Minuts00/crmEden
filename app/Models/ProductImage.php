@@ -10,6 +10,8 @@ class ProductImage extends Model
 {
     use HasFactory;
 
+    protected $table = 'productimages';
+
     protected $fillable = [
         'product_id',
         'img_path',
@@ -35,11 +37,16 @@ class ProductImage extends Model
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')-orderBy('created_at');
+     return $query->orderBy('order')->orderBy('created_at');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 
     public function getImagePathAttribute(): string
     {
-        return storage_path('app/public' . $this->image_path);
+        return storage_path('app/public/' . ltrim($this->img_path, '/'));
     }
 }

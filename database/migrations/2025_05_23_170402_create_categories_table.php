@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('ID');
             $table->string('name');
-            $table->integer('img')->nullable();
+            $table->string('img')->nullable();
         });
     }
 

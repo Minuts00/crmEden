@@ -11,19 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->boolean('stock')->default(true)->after('img');
-        });
+         if (!Schema::hasColumn('products', 'stock')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->boolean('stock')->default(true)->after('img');
+            });
         }
-    
+    }  
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('products', 'stock')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn('stock');
+            });
+        }
     }
 };

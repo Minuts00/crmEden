@@ -11,20 +11,23 @@ class ProductController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAny', Product::class);
         $products = Product::all();
         return view('home', compact('products'));
     }
 
     public function create()
     {
+         $this->authorize('create', Product::class);
         $categories = Category::all();
         return view('products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
+         $this->authorize('create', Product::class);
         $validated = $request->validate([
-            'category'     => 'required|integer|exists:categories,ID',
+            'category_id'     => 'required|integer|exists:categories,ID',
             'name'         => 'required|string|max:255',
             'description'  => 'nullable|string',
             'price_list'   => 'required|numeric|min:0',
@@ -34,7 +37,7 @@ class ProductController extends Controller
         ]);
 
         $product = new Product();
-        $product->category = $validated['category'];
+        $product->category_id = $validated['category_id'];
         $product->name = $validated['name'];
         $product->description = $validated['description'] ?? null;
         $product->price_list = $validated['price_list'];
@@ -54,6 +57,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
+        $this->authorize('update', $product);
         $categories = Category::orderBy('name')->get();
         return view('products.edit', compact('product', 'categories'));
     }
@@ -61,13 +65,14 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
+        $this->authorize('update', $product);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price_list' => 'nullable|numeric',
             'price_min' => 'nullable|numeric',
-            'category' => 'nullable|exists:categories,ID',
+            'category_id' => 'nullable|exists:categories,ID',
             'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'stock' => 'nullable|boolean',
         ]);
@@ -76,7 +81,7 @@ class ProductController extends Controller
         $product->description = $validated['description'] ?? null;
         $product->price_list = $validated['price_list'] ?? null;
         $product->price_min = $validated['price_min'] ?? null;
-        $product->category = $validated['category'] ?? $product->category;
+        $product->category_id = $validated['category_id'] ?? $product->category_id;
         $product->stock = $request->has('stock') ? 1 : 0;
 
         if ($request->hasFile('img')) {
@@ -95,6 +100,8 @@ class ProductController extends Controller
     public function show($id)
 {
     $product = Product::findOrFail($id);
+    $this->authorize('view', $product);
+
     return view('products.show', compact('product'));
 }
 }

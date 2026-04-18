@@ -14,10 +14,10 @@ class OrderController extends Controller
     {
 
     }
-    // da riscrivere TUTTO secondo orders
    
  public function create()
 {
+    $this->authorize('create', Order::class);
     $products = \App\Models\Product::all();
     return view('orders.create', compact('products'));
 }
@@ -26,11 +26,12 @@ public function store(Request $request)
 {
     // dd($request->all());
     if (!Auth::check()) {
+        $this->authorize('create', Order::class);
         return redirect()->route('login')->withErrors('Devi essere autenticato per inviare un ordine.');
     }
 
     $validated = $request->validate([
-        'product_id' => 'required|exists:products,ID',
+        'product_id' => 'required|exists:products,id',
         'description' => 'nullable|string',
         'price' => 'required|numeric',
         'payment_proof' => 'nullable|image|max:2048',
@@ -58,6 +59,7 @@ $order->price = $request->input('price');
 public function show($id)
 {
     $order = Order::findOrFail($id);
+    $this->authorize('view', $order);
     return view('orders.show', compact('order'));
 }
 }
