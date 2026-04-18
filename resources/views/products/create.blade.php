@@ -53,11 +53,16 @@
         </div>
 
         <div>
-            <label for="img" class="block font-medium">Immagine</label>
-            <input type="file" name="img" id="img" accept="image/*" required class="border p-2 w-full">
+             <label for="img" class="block font-medium">Immagine principale</label>
+            <input type="file" name="img" id="img" accept="image/*" class="border p-2 w-full">
             @error('img') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
         </div>
-
+         <div>
+            <label for="imgs" class="block font-medium">Immagini galleria (multiple)</label>
+            <input type="file" name="imgs[]" id="imgs" accept="image/*" multiple class="border p-2 w-full">
+            @error('imgs') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+            @error('imgs.*') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+        </div>
         <div>
             <label for="stock" class="block font-medium">Stock</label>
             <input type="checkbox" name="stock" id="stock" value="1" {{ old('stock', $product->stock ?? true) ? 'checked' : '' }}>

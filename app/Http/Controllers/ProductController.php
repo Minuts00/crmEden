@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductImage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 
@@ -42,6 +43,8 @@ class ProductController extends Controller
             'price_list'   => 'required|numeric|min:0',
             'price_min'    => 'required|numeric|min:0',
             'img'          => 'nullable|image|max:10240',
+            'imgs'         => 'nullable|array',
+            'imgs.*'       => 'image|max:10240',
             'stock'        => 'nullable|boolean',
         ]);
 
@@ -59,6 +62,26 @@ class ProductController extends Controller
         }
 
         $product->save();
+
+          if ($request->hasFile('imgs')) {
+            foreach ($request->file('imgs') as $index => $imageFile) {
+                $path = $imageFile->store('products', 'public');
+
+                if ($index === 0 && empty($product->img)) {
+                    $product->img = $path;
+                    $product->save();
+                }
+
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'img_path' => $path,
+                    'type' => 'gallery',
+                    'order' => $index,
+                    'is_primary' => $index === 0,
+                    'is_active' => true,
+                ]);
+            }
+        }
 
         return redirect()->route('products.create')->with('success', 'Prodotto creato con successo!');
     }

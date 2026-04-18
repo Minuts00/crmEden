@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
      if (!Schema::hasTable('orders')) {
-        Schema::create('orders', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
-        $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-        $table->text('description')->nullable();
-        $table->decimal('price');
-        $table->timestamps();
-    });
-    }
+            Schema::create('orders', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
+                $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+                $table->text('description')->nullable();
+                $table->decimal('price');
+                $table->timestamps();
+            });
+        }
+    
     }   
 
     /**
